@@ -2,7 +2,18 @@ const express = require("express");
 const db = require("../firebase-admin"); // Import the configured Firebase Admin SDK
 
 const router = express.Router();
-
+router.get("/", async (req, res) => {
+      try {
+        res.json({
+          status: 200,
+          message: "Your app health is OK!",
+        });
+      } catch (error) {
+        console.error(error);
+        return res.status(500).send("Server error");
+      }
+    
+    })
 // POST API to upload data to Firebase Realtime Database
 router.post("/", async (req, res) => {
   try {
