@@ -1,6 +1,15 @@
 const express = require("express");
 const db = require("../firebase-admin"); // Import the configured Firebase Admin SDK
 
+
+const getDirName = () =>{
+  const today = new Date();
+  const day = String(today.getDate()).padStart(2, "0");
+  const month = today.toLocaleString("en-US", { month: "short" });
+  const year = today.getFullYear();
+  return `${day}${month}${year}`;
+}
+
 const router = express.Router();
 router.get("/", async (req, res) => {
       try {
@@ -17,13 +26,14 @@ router.get("/", async (req, res) => {
 // POST API to upload data to Firebase Realtime Database
 router.post("/", async (req, res) => {
   try {
+    const dirName = getDirName();
     const data = req.body; // Get the payload from the request body
 
     if (!data || typeof data !== "object") {
       return res.status(400).json({ error: "Invalid payload. Must be a valid JSON object." });
     }
 
-    const ref = db.ref("uploadedData"); // Firebase node (change this as needed)
+    const ref = db.ref(dirName); // Firebase node (change this as needed)
     const newRef = ref.push(); // Generate a unique key for the new entry
     await newRef.set(data); // Save the payload
 
